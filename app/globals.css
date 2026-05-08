@@ -1,0 +1,233 @@
+@import "tailwindcss";
+
+/* -----------------------------------------------------------
+   NOIR DESIGN TOKENS
+   Centralized in Tailwind v4's @theme so utilities like
+   bg-noir-bg, text-noir-fg, border-noir-border, font-display,
+   font-mono are generated automatically.
+   ----------------------------------------------------------- */
+@theme {
+  /* Surfaces */
+  --color-noir-bg: #0a0a0a;
+  --color-noir-bg-deep: #050505;
+  --color-noir-pane: #0d0d0d;
+
+  /* Foreground */
+  --color-noir-fg: #f5f5f0;
+  --color-noir-fg-soft: #d8d8d2;
+  --color-noir-muted: #9a9a9a;
+  --color-noir-faint: #5e5e5a;
+
+  /* Borders */
+  --color-noir-border: rgba(245, 245, 240, 0.18);
+  --color-noir-border-soft: rgba(245, 245, 240, 0.08);
+  --color-noir-border-strong: #f5f5f0;
+
+  /* Accent */
+  --color-noir-red: #c1121f;
+  --color-noir-red-deep: #b00020;
+  --color-noir-red-hot: #ff3333;
+
+  /* Typography */
+  --font-display: var(--font-playfair), "Playfair Display", "Cormorant Garamond",
+    Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-jetbrains-mono), "JetBrains Mono", ui-monospace,
+    SFMono-Regular, "SF Mono", Menlo, monospace;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+
+  /* All radii sharp. Override Tailwind's default rounded-* tokens. */
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+}
+
+/* -----------------------------------------------------------
+   BASE
+   ----------------------------------------------------------- */
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: var(--color-noir-bg);
+  color: var(--color-noir-fg);
+}
+
+body {
+  font-family: var(--font-mono);
+  font-feature-settings: "ss01", "ss02", "calt", "liga";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  letter-spacing: 0.01em;
+}
+
+::selection {
+  background: var(--color-noir-red);
+  color: var(--color-noir-fg);
+}
+
+/* Sharp corners everywhere. */
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
+}
+
+/* High-contrast focus rings. Visible on every interactive element. */
+:where(a, button, [role="button"], [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 2px solid var(--color-noir-fg);
+  outline-offset: 2px;
+}
+
+/* Strip the default button styling so our [ COMMAND ] buttons read clean. */
+button {
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+/* Headings inherit display family by default; can be overridden per-component. */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 0.95;
+}
+
+/* -----------------------------------------------------------
+   UTILITIES — visual signatures
+   ----------------------------------------------------------- */
+
+/* Scanline overlay — very faint horizontal lines. */
+@utility noir-scanlines {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(245, 245, 240, 0.025) 0px,
+    rgba(245, 245, 240, 0.025) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+/* Newspaper rule (thick double line). */
+@utility noir-rule-double {
+  border-top: 1px solid var(--color-noir-fg);
+  box-shadow: 0 3px 0 -2px var(--color-noir-fg);
+}
+
+/* Editorial display headline tracking. */
+@utility text-editorial {
+  font-family: var(--font-display);
+  letter-spacing: -0.025em;
+  line-height: 0.92;
+}
+
+/* Mono label — small caps, wide tracking, used for metadata, labels, badges. */
+@utility text-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem; /* 11px */
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+@utility text-label-sm {
+  font-family: var(--font-mono);
+  font-size: 0.625rem; /* 10px */
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* Mono command — for prompts, $-style commands. */
+@utility text-prompt {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem; /* 13px */
+  letter-spacing: 0.04em;
+}
+
+/* -----------------------------------------------------------
+   ANIMATIONS
+   ----------------------------------------------------------- */
+@keyframes noir-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes noir-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes noir-spin-slow {
+  from {
+    transform: rotateX(-18deg) rotateY(0deg);
+  }
+  to {
+    transform: rotateX(-18deg) rotateY(360deg);
+  }
+}
+
+.noir-cursor::after {
+  content: "█";
+  display: inline-block;
+  margin-left: 0.15em;
+  animation: noir-blink 1s steps(1) infinite;
+  color: var(--color-noir-fg);
+}
+
+.noir-marquee {
+  animation: noir-marquee 60s linear infinite;
+}
+
+/* -----------------------------------------------------------
+   INFINITE SCROLL HELPERS
+   Reduce flicker during the seamless wrap.
+   ----------------------------------------------------------- */
+[data-noir-original],
+[data-noir-clone] {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+[data-noir-clone] {
+  user-select: none;
+}
+
+/* -----------------------------------------------------------
+   REDUCED MOTION
+   ----------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .noir-marquee {
+    animation: none !important;
+  }
+  .noir-cursor::after {
+    animation: none !important;
+  }
+}
