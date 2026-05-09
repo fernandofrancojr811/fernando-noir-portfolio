@@ -213,6 +213,53 @@ h4 {
   user-select: none;
 }
 
+/* Legacy archive boot — subtle VHS / signal instability (overlay only) */
+.legacy-boot-vhs {
+  opacity: 0.42;
+  mix-blend-mode: soft-light;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(245, 245, 240, 0.04) 0px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+/* Legacy console CRT — soft phosphor breathing (component-local; respects global reduced-motion rules) */
+@keyframes legacy-console-crt-shimmer {
+  0%,
+  100% {
+    opacity: 0.62;
+  }
+  50% {
+    opacity: 0.92;
+  }
+}
+
+.legacy-console-crt-glow {
+  background: radial-gradient(
+    ellipse 120% 80% at 50% 40%,
+    rgba(245, 245, 240, 0.05) 0%,
+    transparent 55%
+  );
+  animation: legacy-console-crt-shimmer 5.2s ease-in-out infinite;
+}
+
+@keyframes legacy-console-crt-roll {
+  0% {
+    transform: translateY(-8%);
+    opacity: 0.15;
+  }
+  100% {
+    transform: translateY(120%);
+    opacity: 0.08;
+  }
+}
+
+.legacy-console-crt-roll {
+  animation: legacy-console-crt-roll 11s linear infinite;
+}
+
 /* -----------------------------------------------------------
    REDUCED MOTION
    ----------------------------------------------------------- */
@@ -228,6 +275,10 @@ h4 {
     animation: none !important;
   }
   .noir-cursor::after {
+    animation: none !important;
+  }
+  .legacy-console-crt-glow,
+  .legacy-console-crt-roll {
     animation: none !important;
   }
 }

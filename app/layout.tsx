@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, JetBrains_Mono, Playfair_Display } from "next/font/google";
+import { siteConfig } from "@/app/lib/config";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
   description:
     "Software engineer — mission-critical aerospace, embedded C/C++, Linux, simulation & HIL, telemetry, secure cloud, and full-stack delivery. A cinematic noir dossier.",
   authors: [{ name: "Fernando Franco Jr." }],
-  metadataBase: new URL("https://fernandofranco.dev"),
+  metadataBase: new URL(siteConfig.siteUrl),
   openGraph: {
     title: "Fernando Franco Jr. // Engineering Dossier",
     description:

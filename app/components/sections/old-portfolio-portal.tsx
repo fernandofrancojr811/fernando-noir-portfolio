@@ -1,95 +1,34 @@
-import * as React from "react";
+import dynamic from "next/dynamic";
 import { CommandButton } from "@/app/components/primitives/command-button";
 import { siteConfig } from "@/app/lib/config";
 
-/**
- * Console3D — pure-CSS 3D rotating console placeholder.
- * - 6 faces, sharp corners, off-white edges only.
- * - Uses a slow rotation animation defined in globals.css.
- * - No images, no shadows. Decorative — aria-hidden.
- */
-function Console3D() {
-  const size = 220;
-  const half = size / 2;
-  const faceBase =
-    "absolute inset-0 border border-noir-border bg-noir-bg-deep flex items-center justify-center text-label-sm text-noir-muted";
-
-  return (
-    <div
-      aria-hidden
-      className="relative mx-auto"
-      style={{
-        width: size,
-        height: size,
-        perspective: "1200px",
-      }}
-    >
+const LegacyConsole = dynamic(
+  () =>
+    import("@/app/components/primitives/legacy-console").then(
+      (mod) => mod.LegacyConsole,
+    ),
+  {
+    loading: () => (
       <div
-        className="relative"
-        style={{
-          width: size,
-          height: size,
-          transformStyle: "preserve-3d",
-          animation: "noir-spin-slow 22s linear infinite",
-        }}
-      >
-        <div
-          className={faceBase}
-          style={{ transform: `translateZ(${half}px)` }}
-        >
-          <div className="flex flex-col items-center gap-3 px-3 text-center">
-            <span className="text-label text-noir-red">[ ARCHIVE ]</span>
-            <span className="font-display text-noir-fg text-2xl leading-none tracking-[-0.02em]">
-              TERMINAL
-            </span>
-            <span className="text-label-sm text-noir-faint">
-              PREVIOUS SYSTEM VERSION
-            </span>
-            <span className="size-1.5 bg-noir-red" />
-          </div>
-        </div>
-        <div
-          className={faceBase}
-          style={{ transform: `rotateY(180deg) translateZ(${half}px)` }}
-        >
-          <span className="text-label text-noir-fg-soft">REAR I/O</span>
-        </div>
-        <div
-          className={faceBase}
-          style={{ transform: `rotateY(90deg) translateZ(${half}px)` }}
-        >
-          <span className="text-label text-noir-fg-soft">SIDE A</span>
-        </div>
-        <div
-          className={faceBase}
-          style={{ transform: `rotateY(-90deg) translateZ(${half}px)` }}
-        >
-          <span className="text-label text-noir-fg-soft">SIDE B</span>
-        </div>
-        <div
-          className={faceBase}
-          style={{ transform: `rotateX(90deg) translateZ(${half}px)` }}
-        >
-          <span className="text-label text-noir-fg-soft">VENT</span>
-        </div>
-        <div
-          className={faceBase}
-          style={{ transform: `rotateX(-90deg) translateZ(${half}px)` }}
-        >
-          <span className="text-label text-noir-fg-soft">BASE</span>
-        </div>
-      </div>
-    </div>
-  );
-}
+        className="mx-auto w-full max-w-[440px] min-h-[360px] border border-noir-border/40 bg-noir-bg-deep/80"
+        aria-hidden
+      />
+    ),
+  },
+);
 
 export function OldPortfolioPortal() {
   return (
     <section
       id="archive"
       aria-labelledby="archive-heading"
-      className="relative py-20 sm:py-28"
+      className="relative scroll-mt-6 py-20 sm:py-28"
     >
+      {/* Darker transition zone — end of dossier loop quiets into archive */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 -top-px h-48 sm:h-56 bg-gradient-to-b from-noir-bg via-[#060606] via-noir-bg-deep to-transparent"
+      />
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="relative border border-noir-fg bg-noir-bg-deep">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-noir-fg px-4 sm:px-6 py-3">
@@ -105,10 +44,18 @@ export function OldPortfolioPortal() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 lg:divide-x lg:divide-noir-fg">
-            <div className="lg:col-span-5 p-8 sm:p-12 flex flex-col items-center justify-center gap-6 border-b lg:border-b-0 border-noir-fg min-h-[360px] noir-scanlines">
-              <Console3D />
-              <p className="text-label-sm text-noir-muted text-center">
-                ./archive/legacy-interface &nbsp;—&nbsp; standalone runtime
+            <div className="lg:col-span-5 relative p-8 sm:p-12 flex flex-col items-center justify-center gap-6 border-b lg:border-b-0 border-noir-fg min-h-[380px] noir-scanlines bg-gradient-to-b from-noir-bg-deep via-noir-bg-deep to-black shadow-[inset_0_0_80px_rgba(0,0,0,0.45)]">
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,rgba(193,18,31,0.06)_0%,transparent_55%)]"
+              />
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_75%,rgba(0,0,0,0.92)_0%,transparent_62%)]"
+              />
+              <LegacyConsole legacyUrl={siteConfig.oldPortfolioUrl} />
+              <p className="relative z-[1] text-label-sm text-noir-muted text-center">
+                ./archive/legacy-interface &nbsp;—&nbsp; discovered runtime node
               </p>
             </div>
 
@@ -125,10 +72,9 @@ export function OldPortfolioPortal() {
                 <span className="text-noir-fg">INTERFACE.</span>
               </h2>
               <p className="text-noir-muted text-[14px] leading-relaxed max-w-xl">
-                An earlier creative environment — different visual system,
-                different interaction model, same underlying engineering habit.
-                Experimental archive; nostalgic by intent, not polished to
-                program standards.
+                A previous generation interface preserved as a living artifact.
+                Different interaction language, same engineering craft - a quiet
+                system waiting at the end of the dossier.
               </p>
 
               <div className="flex flex-wrap gap-3 mt-2">
@@ -148,7 +94,9 @@ export function OldPortfolioPortal() {
               </div>
 
               <p className="mt-4 text-label-sm text-noir-faint">
-                Opens in a new tab. Isolated from this dossier — by design.
+                The archive device above boots the legacy site in this window. The
+                command link opens the same archive in a new tab — isolated from
+                this dossier by design.
               </p>
             </div>
           </div>

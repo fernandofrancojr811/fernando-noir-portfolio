@@ -8,15 +8,15 @@ export const profile = {
 
   /** Masthead tagline under the hero name */
   tagline:
-    "REAL-TIME SYSTEMS // DEFENSE // EMBEDDED // FULL-STACK // CLOUD",
+    "REAL-TIME SYSTEMS // EMBEDDED // DISTRIBUTED // CLOUD // INTERFACES",
 
   location: "OKLAHOMA, USA",
 
-  /** Shown in metadata bar — current assignment reads as “active ops,” not job-market signal */
+  /** Shown in metadata bar — editorial status read */
   status: "ACTIVE",
 
   /** Second line under status in the terminal pane */
-  statusDetail: "BOEING — B-52H SOFTWARE BLOCKS // FLIGHT & SIMULATION",
+  statusDetail: "BOEING — AEROSPACE FLIGHT & SIMULATION SOFTWARE",
 
   callsign: "ff_jr",
 
@@ -32,17 +32,17 @@ export const profile = {
 
   /** One-line editorial hero abstract (italic lead) */
   heroAbstract:
-    "Mission-critical aerospace and distributed software — embedded, simulated, and verified before it ever touches the aircraft.",
+    "Engineer at the seam where embedded systems, real-time software, and the cloud quietly converge — building infrastructure that reads more like an interface than a wiring diagram.",
 
   /** Professional summary / deck — résumé-first, systems tone */
   deck:
-    "Software engineer building mission-critical aerospace and distributed systems across embedded C/C++, Linux, simulation, and cloud. Work spans flight and simulation software, hardware–software interfaces, telemetry and observability, verification & validation, and secure full-stack tooling when the mission needs a dashboard — not a slide deck.",
+    "Software engineer working across embedded C/C++, real-time Linux, simulation, and cloud — currently shipping aerospace flight and simulation software at Boeing. Drawn to the rare projects where embedded, distributed, and human-facing layers all meet, and where careful engineering quietly turns into something that feels like good design.",
 
   stats: [
-    { label: "PRIMARY LANGUAGES", value: "C · C++ · PYTHON · JAVA" },
-    { label: "DOMAINS", value: "EMBEDDED · SIM · CLOUD" },
-    { label: "RUNTIME", value: "LINUX · RT · DISTRIBUTED" },
-    { label: "CURRENT ASSIGNMENT", value: "BOEING · B-52H" },
+    { label: "LANGUAGES", value: "C · C++ · PYTHON · JAVA" },
+    { label: "DOMAINS", value: "EMBEDDED · SIMULATION · CLOUD" },
+    { label: "RUNTIMES", value: "LINUX · REAL-TIME · DISTRIBUTED" },
+    { label: "CURRENTLY", value: "BOEING · AEROSPACE SOFTWARE" },
   ],
 
   links: {
@@ -64,7 +64,7 @@ export const profile = {
   ],
 
   classifiedQuote:
-    "Flight software temperament: measure twice, integrate once, sign the log.",
+    "Good engineering ages quietly into good design — the architecture stops being noticed and just gets trusted.",
 
   ticker: [
     "MISSION-CRITICAL SOFTWARE",

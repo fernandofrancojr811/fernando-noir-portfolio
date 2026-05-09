@@ -4,16 +4,20 @@
  */
 export const siteConfig = {
   /**
+   * Canonical production URL for this noir dossier.
+   */
+  siteUrl: "https://fernandofrancojr.com",
+
+  /**
    * Master switch for the seamless infinite-scroll loop.
    * Disable if it ever creates usability issues.
    */
   infiniteScrollEnabled: true,
 
   /**
-   * URL of the legacy PS3 / VHS-style portfolio.
-   * Replace with the real archive URL once it's live.
+   * Archived “previous system” portfolio — standalone legacy runtime.
    */
-  oldPortfolioUrl: "https://example.com/legacy",
+  oldPortfolioUrl: "https://legacy.fernandofrancojr.com",
 
   /**
    * Editorial "issue" metadata shown on the masthead.
