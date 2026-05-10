@@ -2,10 +2,10 @@ import dynamic from "next/dynamic";
 import { CommandButton } from "@/app/components/primitives/command-button";
 import { siteConfig } from "@/app/lib/config";
 
-const LegacyConsole = dynamic(
+const DeferredLegacyConsole = dynamic(
   () =>
-    import("@/app/components/primitives/legacy-console").then(
-      (mod) => mod.LegacyConsole,
+    import("@/app/components/primitives/deferred-legacy-console").then(
+      (mod) => mod.DeferredLegacyConsole,
     ),
   {
     loading: () => (
@@ -22,12 +22,12 @@ export function OldPortfolioPortal() {
     <section
       id="archive"
       aria-labelledby="archive-heading"
-      className="relative scroll-mt-6 py-20 sm:py-28"
+      className="relative scroll-mt-6 py-12 sm:py-14 md:py-16 lg:py-20"
     >
       {/* Darker transition zone — end of dossier loop quiets into archive */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 -top-px h-48 sm:h-56 bg-gradient-to-b from-noir-bg via-[#060606] via-noir-bg-deep to-transparent"
+        className="pointer-events-none absolute inset-x-0 -top-px h-32 sm:h-40 md:h-48 bg-gradient-to-b from-noir-bg via-[#060606] via-noir-bg-deep to-transparent"
       />
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="relative border border-noir-fg bg-noir-bg-deep">
@@ -53,7 +53,7 @@ export function OldPortfolioPortal() {
                 aria-hidden
                 className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_75%,rgba(0,0,0,0.92)_0%,transparent_62%)]"
               />
-              <LegacyConsole legacyUrl={siteConfig.oldPortfolioUrl} />
+              <DeferredLegacyConsole legacyUrl={siteConfig.oldPortfolioUrl} />
               <p className="relative z-[1] text-label-sm text-noir-muted text-center">
                 ./archive/legacy-interface &nbsp;—&nbsp; discovered runtime node
               </p>

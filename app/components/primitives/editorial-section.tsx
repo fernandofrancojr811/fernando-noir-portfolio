@@ -40,12 +40,14 @@ export function EditorialSection({
       id={id}
       className={cn(
         "relative",
-        density === "default" ? "py-20 sm:py-28" : "py-14 sm:py-20",
+        density === "default"
+          ? "py-12 sm:py-14 md:py-16 lg:py-20"
+          : "py-10 sm:py-12 md:py-14 lg:py-16",
         className,
       )}
     >
       <div className={cn(!bare && "mx-auto max-w-7xl px-5 sm:px-8")}>
-        <header className="mb-10 sm:mb-14">
+        <header className="mb-8 sm:mb-10 md:mb-12">
           <div className="flex items-end justify-between gap-6 mb-5">
             {eyebrow && (
               <span className="text-label text-noir-red">{eyebrow}</span>

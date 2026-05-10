@@ -21,7 +21,7 @@ export function Hero() {
     <section
       id="top"
       aria-labelledby="hero-headline"
-      className="relative pt-8 sm:pt-12 pb-14 sm:pb-20"
+      className="relative pt-6 sm:pt-10 pb-10 sm:pb-12 md:pb-14 lg:pb-16"
     >
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <MetadataBar
@@ -41,10 +41,10 @@ export function Hero() {
             { divider: true },
             { label: "FILED", value: issueDate },
           ]}
-          className="mb-8"
+          className="mb-6 sm:mb-7"
         />
 
-        <header className="mb-8">
+        <header className="mb-6 sm:mb-7">
           <p className="text-label text-noir-red mb-5">
             {"// 01 — ENGINEERING DOSSIER"}
           </p>

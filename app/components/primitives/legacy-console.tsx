@@ -17,6 +17,21 @@ type LegacyConsoleProps = {
   className?: string;
 };
 
+function useLgViewport() {
+  const query = "(min-width: 1024px)";
+  return React.useSyncExternalStore(
+    (notify) => {
+      if (typeof window === "undefined") return () => undefined;
+      const mq = window.matchMedia(query);
+      mq.addEventListener("change", notify);
+      return () => mq.removeEventListener("change", notify);
+    },
+    () =>
+      typeof window !== "undefined" ? window.matchMedia(query).matches : false,
+    () => false,
+  );
+}
+
 function LegacyBootOverlay({ active }: { active: boolean }) {
   const mounted = React.useSyncExternalStore(
     () => () => undefined,
@@ -91,6 +106,8 @@ export function LegacyConsole({ legacyUrl, className }: LegacyConsoleProps) {
   const reduced = useReducedMotion();
   const [booting, setBooting] = React.useState(false);
   const [hovered, setHovered] = React.useState(false);
+  const heavyEffects = useLgViewport();
+  const cinematicMotion = !reduced && heavyEffects;
 
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
@@ -166,11 +183,11 @@ export function LegacyConsole({ legacyUrl, className }: LegacyConsoleProps) {
         <motion.div
           className="relative"
           animate={
-            reduced
-              ? undefined
-              : {
+            cinematicMotion
+              ? {
                   y: [0, -6, 0],
                 }
+              : false
           }
           transition={{
             duration: 16,
@@ -183,9 +200,7 @@ export function LegacyConsole({ legacyUrl, className }: LegacyConsoleProps) {
           <motion.div
             className="relative origin-center [transform-style:preserve-3d]"
             animate={
-              reduced
-                ? undefined
-                : { rotateZ: [0, 0.4, 0, -0.32, 0] }
+              cinematicMotion ? { rotateZ: [0, 0.4, 0, -0.32, 0] } : false
             }
             transition={{
               duration: 22,
@@ -321,31 +336,35 @@ export function LegacyConsole({ legacyUrl, className }: LegacyConsoleProps) {
                             />
                           </div>
 
-                          {/* Subtle chromatic aberration (tasteful, not neon) */}
-                          <div
-                            aria-hidden
-                            className="pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-screen"
-                          >
-                            <Image
-                              src="/images/old-web.png"
-                              alt=""
-                              fill
-                              sizes="(max-width: 640px) 320px, 360px"
-                              className="object-contain [filter:hue-rotate(165deg)_saturate(1.2)] translate-x-[0.6px]"
-                            />
-                          </div>
-                          <div
-                            aria-hidden
-                            className="pointer-events-none absolute inset-0 opacity-[0.06] mix-blend-screen"
-                          >
-                            <Image
-                              src="/images/old-web.png"
-                              alt=""
-                              fill
-                              sizes="(max-width: 640px) 320px, 360px"
-                              className="object-contain [filter:hue-rotate(-12deg)_saturate(1.15)] -translate-x-[0.5px]"
-                            />
-                          </div>
+                          {/* Subtle chromatic aberration — desktop only (avoids triple decode on phones) */}
+                          {heavyEffects ? (
+                            <>
+                              <div
+                                aria-hidden
+                                className="pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-screen"
+                              >
+                                <Image
+                                  src="/images/old-web.png"
+                                  alt=""
+                                  fill
+                                  sizes="(max-width: 640px) 320px, 360px"
+                                  className="object-contain [filter:hue-rotate(165deg)_saturate(1.2)] translate-x-[0.6px]"
+                                />
+                              </div>
+                              <div
+                                aria-hidden
+                                className="pointer-events-none absolute inset-0 opacity-[0.06] mix-blend-screen"
+                              >
+                                <Image
+                                  src="/images/old-web.png"
+                                  alt=""
+                                  fill
+                                  sizes="(max-width: 640px) 320px, 360px"
+                                  className="object-contain [filter:hue-rotate(-12deg)_saturate(1.15)] -translate-x-[0.5px]"
+                                />
+                              </div>
+                            </>
+                          ) : null}
                         </div>
 
                         {/* CRT phosphor pool */}
@@ -357,9 +376,9 @@ export function LegacyConsole({ legacyUrl, className }: LegacyConsoleProps) {
                           aria-hidden
                           className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_118%,rgba(193,18,31,0.09)_0%,transparent_48%)]"
                           animate={
-                            reduced
-                              ? undefined
-                              : { opacity: [0.4, 0.78, 0.52, 0.7, 0.42] }
+                            cinematicMotion
+                              ? { opacity: [0.4, 0.78, 0.52, 0.7, 0.42] }
+                              : false
                           }
                           transition={{
                             duration: 6.2,
@@ -406,13 +425,13 @@ export function LegacyConsole({ legacyUrl, className }: LegacyConsoleProps) {
                           aria-hidden
                           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_52%,rgba(56,189,248,0.10)_0%,transparent_58%)] mix-blend-screen"
                           animate={
-                            reduced
-                              ? undefined
-                              : {
+                            cinematicMotion
+                              ? {
                                   opacity: hovered
                                     ? [0.36, 0.55, 0.42, 0.58, 0.4]
                                     : [0.22, 0.32, 0.25, 0.34, 0.24],
                                 }
+                              : false
                           }
                           transition={{
                             duration: hovered ? 3.2 : 5.6,
@@ -431,9 +450,13 @@ export function LegacyConsole({ legacyUrl, className }: LegacyConsoleProps) {
                             backgroundSize: "36px 36px",
                           }}
                           animate={
-                            reduced
-                              ? undefined
-                              : { opacity: hovered ? [0.08, 0.16, 0.1, 0.18, 0.12] : [0.06, 0.12, 0.08, 0.13, 0.07] }
+                            cinematicMotion
+                              ? {
+                                  opacity: hovered
+                                    ? [0.08, 0.16, 0.1, 0.18, 0.12]
+                                    : [0.06, 0.12, 0.08, 0.13, 0.07],
+                                }
+                              : false
                           }
                           transition={{
                             duration: hovered ? 1.8 : 2.8,
@@ -456,11 +479,11 @@ export function LegacyConsole({ legacyUrl, className }: LegacyConsoleProps) {
                     <motion.span
                       className="size-1.5 shrink-0 bg-noir-red shadow-[0_0_12px_rgba(193,18,31,0.6)]"
                       animate={
-                        reduced
-                          ? undefined
-                          : hovered
+                        cinematicMotion
+                          ? hovered
                             ? { opacity: [1, 0.72, 1, 0.86, 1] }
                             : { opacity: [1, 0.3, 1, 0.55, 1] }
+                          : false
                       }
                       transition={{
                         duration: 4.2,
@@ -471,11 +494,11 @@ export function LegacyConsole({ legacyUrl, className }: LegacyConsoleProps) {
                     <motion.span
                       className="size-1.5 shrink-0 bg-[#c9a227]/90 shadow-[0_0_10px_rgba(201,162,39,0.42)]"
                       animate={
-                        reduced
-                          ? undefined
-                          : hovered
+                        cinematicMotion
+                          ? hovered
                             ? { opacity: [1, 0.82, 1, 0.9] }
                             : { opacity: [0.85, 1, 0.65, 1] }
+                          : false
                       }
                       transition={{
                         duration: 5.4,
@@ -508,7 +531,7 @@ export function LegacyConsole({ legacyUrl, className }: LegacyConsoleProps) {
                       <motion.div
                         aria-hidden
                         className="relative size-7 shrink-0 rounded-none border border-noir-border/45 bg-[conic-gradient(from_180deg,#141414,#050505,#101010,#050505)] shadow-[inset_0_3px_6px_rgba(0,0,0,0.75),0_1px_0_rgba(255,255,255,0.04)]"
-                        animate={reduced ? undefined : { rotate: 360 }}
+                        animate={cinematicMotion ? { rotate: 360 } : false}
                         transition={{
                           duration: 96,
                           repeat: Infinity,

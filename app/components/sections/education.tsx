@@ -18,7 +18,7 @@ export function Education() {
       deck="Formal credentialing: computer science core, systems-heavy coursework, and SHPE-aligned engagement on campus."
       meta={<>./var/records/education</>}
     >
-      <div className="space-y-10">
+      <div className="space-y-8 md:space-y-9">
         {education.map((edu, i) => (
           <article
             key={`${edu.institution}-${i}`}

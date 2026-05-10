@@ -9,8 +9,8 @@ export const siteConfig = {
   siteUrl: "https://fernandofrancojr.com",
 
   /**
-   * Master switch for the seamless infinite-scroll loop.
-   * Disable if it ever creates usability issues.
+   * Master switch for the seamless infinite-scroll loop (desktop `lg+`
+   * only; phones/tablets always use linear scroll).
    */
   infiniteScrollEnabled: true,
 

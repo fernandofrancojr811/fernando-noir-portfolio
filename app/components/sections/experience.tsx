@@ -32,7 +32,7 @@ export function Experience() {
         </>
       }
     >
-      <ol className="space-y-5">
+      <ol className="space-y-4 md:space-y-5">
         {experience.map((role, i) => (
           <li key={`${role.company}-${i}`}>
             <DossierCard

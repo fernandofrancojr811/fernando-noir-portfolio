@@ -12,14 +12,20 @@ type InfiniteScrollWrapperProps = {
 };
 
 /**
- * Returns true on the client (after hydration), false on the server.
- * Uses the React-blessed external-store pattern instead of useEffect
- * + setState to avoid cascading-render lint rules.
+ * Desktop-only: seamless loop duplicates a tall DOM tree; keep it off
+ * phones/tablets to avoid jank and unnecessary layout work.
  */
-function useIsClient() {
+function useDesktopLoopViewport() {
+  const query = "(min-width: 1024px)";
   return React.useSyncExternalStore(
-    () => () => undefined,
-    () => true,
+    (notify) => {
+      if (typeof window === "undefined") return () => undefined;
+      const mq = window.matchMedia(query);
+      mq.addEventListener("change", notify);
+      return () => mq.removeEventListener("change", notify);
+    },
+    () =>
+      typeof window !== "undefined" ? window.matchMedia(query).matches : false,
     () => false,
   );
 }
@@ -62,6 +68,10 @@ function useReducedMotion() {
  *   - Anchor links / hash navigation: when the URL has a hash, we skip
  *     wrapping for a moment so the browser can land on the target.
  *
+ * Viewports below the `lg` breakpoint use normal linear scrolling (no
+ * duplicate DOM, no scroll wrapping). Wider screens keep the loop when
+ * enabled and motion is allowed.
+ *
  * If wrapping ever feels off on a given device, set the master flag to
  * false in `lib/config.ts`.
  */
@@ -69,19 +79,21 @@ export function InfiniteScrollWrapper({
   enabled = true,
   children,
 }: InfiniteScrollWrapperProps) {
-  const mounted = useIsClient();
+  const desktopLoop = useDesktopLoopViewport();
   const reduced = useReducedMotion();
   const originalRef = React.useRef<HTMLDivElement>(null);
-  const cloneRef = React.useRef<HTMLDivElement>(null);
+
+  const loopActive = Boolean(enabled && !reduced && desktopLoop);
 
   // Scroll wrap logic.
   React.useEffect(() => {
-    if (!mounted || !enabled || reduced) return;
+    if (!loopActive) return;
     if (typeof window === "undefined") return;
 
     let originalHeight = 0;
     let isJumping = false;
     let suspendUntil = 0; // ms timestamp — skip wrapping until this time
+    let scrollRaf = 0;
 
     const measure = () => {
       const el = originalRef.current;
@@ -118,6 +130,14 @@ export function InfiniteScrollWrapper({
       }
     };
 
+    const scheduleWrap = () => {
+      if (scrollRaf) return;
+      scrollRaf = requestAnimationFrame(() => {
+        scrollRaf = 0;
+        wrap();
+      });
+    };
+
     // Wheel handler — covers the case where the browser refuses to
     // scroll past 0 (so the scroll event won't fire) but the user
     // is clearly trying to go up.
@@ -145,7 +165,7 @@ export function InfiniteScrollWrapper({
     const ro = new ResizeObserver(measure);
     if (originalRef.current) ro.observe(originalRef.current);
 
-    window.addEventListener("scroll", wrap, { passive: true });
+    window.addEventListener("scroll", scheduleWrap, { passive: true });
     window.addEventListener("resize", measure);
     window.addEventListener("wheel", onWheel, { passive: true });
     window.addEventListener("hashchange", onHashChange);
@@ -161,24 +181,24 @@ export function InfiniteScrollWrapper({
     }
 
     return () => {
-      window.removeEventListener("scroll", wrap);
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      window.removeEventListener("scroll", scheduleWrap);
       window.removeEventListener("resize", measure);
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("hashchange", onHashChange);
       ro.disconnect();
     };
-  }, [mounted, enabled, reduced]);
+  }, [loopActive]);
 
-  const showClone = mounted && enabled && !reduced;
+  const showClone = loopActive;
 
   return (
     <>
       <div ref={originalRef} data-noir-original>
         {children}
       </div>
-      {showClone && (
+      {showClone ? (
         <div
-          ref={cloneRef}
           data-noir-clone
           aria-hidden="true"
           // `inert` removes the subtree from focus + a11y tree.
@@ -187,7 +207,7 @@ export function InfiniteScrollWrapper({
         >
           {children}
         </div>
-      )}
+      ) : null}
     </>
   );
 }
